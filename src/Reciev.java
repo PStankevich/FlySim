@@ -50,7 +50,12 @@ public class Reciev {
             packet.setLength(buffer.length);
 
 //            System.out.println("Recieve: ");
-            serialPort.writeString(Integer.toString(getGear()));
+                for (int i = 0; i < numArr.length; i++) {
+                    serialPort.writeString(Integer.toString(numArr[i]));
+                    serialPort.writeString(" ");
+                }
+                    serialPort.writeString("n ");
+
 //            System.out.println(Integer.toString(getGear()));
         }
         } catch (Exception e) {
