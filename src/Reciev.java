@@ -14,17 +14,22 @@ import java.util.Arrays;
 
 
 public class Reciev {
-    public static int gear;
 
 
     private static SerialPort serialPort;
+    private static int count;
+    private static int countNum;
+
+
+
     public static void main(String args[]) {
         try {
             int port = 20083;
 
+
             serialPort = new SerialPort("COM4");
             serialPort.openPort();
-            serialPort.setParams(SerialPort.BAUDRATE_9600,
+            serialPort.setParams(SerialPort.BAUDRATE_115200,
                     SerialPort.DATABITS_8,
                     SerialPort.STOPBITS_1,
                     SerialPort.PARITY_NONE);
@@ -42,21 +47,23 @@ public class Reciev {
             for (int i = 0; i < numArr.length; i++) {
                 System.out.print(numArr[i] + ", ");
             }
-            setGear(numArr[1]);
 
-            System.out.println();
-//            System.out.println("ASp = " + numArr[(numArr.length - 1)]);
-            System.out.println();
+                System.out.println(buffer.length);
+                System.out.println();
             packet.setLength(buffer.length);
-
-//            System.out.println("Recieve: ");
-                for (int i = 0; i < numArr.length; i++) {
-                    serialPort.writeString(Integer.toString(numArr[i]));
-                    serialPort.writeString(" ");
+                    serialPort.writeString("s");
+                    serialPort.writeString(Integer.toString(numArr.length));
+                    serialPort.writeString(":");
+                    for (int i = 0; i < numArr.length/2; i++) {
+                        serialPort.writeString(Integer.toString(numArr[i]));
+                        serialPort.writeString("/");
                 }
-                    serialPort.writeString("n ");
+                serialPort.writeString("d");
+                for (int i = numArr.length/2 + 1; i < numArr.length; i++) {
+                    serialPort.writeString(Integer.toString(numArr[i]));
+                    serialPort.writeString("/");
+                }
 
-//            System.out.println(Integer.toString(getGear()));
         }
         } catch (Exception e) {
             System.err.println(e);
@@ -65,13 +72,6 @@ public class Reciev {
 
         }
     }
-    public static void setGear(int x){
-        gear = x;
-    }
-
-    public static int getGear(){
-        return gear;
-    }
 
 
     private static class PortReader implements SerialPortEventListener {
@@ -79,18 +79,18 @@ public class Reciev {
         public void serialEvent(SerialPortEvent event) {
             if(event.isRXCHAR() && event.getEventValue() > 0){
                 try {
-                    //�������� ����� �� ����������, ������������ ������ � �.�.
                     String data = serialPort.readString(event.getEventValue());
-//                    serialPort.writeString(Integer.toString(getGear()));
-
                     System.out.println(data);
-                    //� ����� ���������� ������
-//                    serialPort.writeString("Get data");
                 }
                 catch (SerialPortException ex) {
                     System.out.println(ex);
                 }
             }
         }
+    }
+    public static int timer() throws InterruptedException {
+        Thread.sleep(10);
+        count++;
+        return count;
     }
 }
